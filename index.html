@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,12 +139,9 @@ button:disabled {
   margin-bottom: 4px;
 }
 
-.dice <div id="dice-container">
-  <div id="d20" class="d20 rolling">?</div>
-</div>
-
+/* ---------- D20 visual ---------- */
 #dice-container {
-  margin: 20px auto;
+  margin: 20px auto 10px;
   display: flex;
   justify-content: center;
 }
@@ -155,7 +153,7 @@ button:disabled {
   background: radial-gradient(circle at top left, #333, #000);
   border: 4px solid #00bcd4;
   color: #e0f7fa;
-  font-size: 3rem;
+  font-size: 2.6rem;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -164,39 +162,18 @@ button:disabled {
     0 0 15px rgba(0, 188, 212, 0.8),
     inset 0 0 10px rgba(255, 255, 255, 0.1);
   user-select: none;
+  transition: transform 0.2s ease;
 }
 
-.d20.rolling {const d20 = document.getElementById("d20");
-
-function rollD20Animated() {
-  d20.classList.add("rolling");
-  d20.textContent = "?";
-
-  const roll = Math.floor(Math.random() * 20) + 1;
-
-  setTimeout(() => {
-    d20.classList.remove("rolling");
-    d20.textContent = roll;
-
-    // IMPORTANT:
-    // Call your existing "handleRollResult(roll)" logic here
-    handleRollResult(roll);
-
-  }, 1200); // animation duration
-}
-
+/* spin animation applied when rolling */
+.d20.rolling {
+  animation: d20-spin 1.2s ease-in-out;
 }
 
 @keyframes d20-spin {
   0%   { transform: rotate(0deg) scale(1); }
   50%  { transform: rotate(180deg) scale(1.1); }
   100% { transform: rotate(360deg) scale(1); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg) scale(0.8); opacity: 0; }
-  50% { transform: rotate(360deg) scale(1.2); opacity: 1; }
-  100% { transform: rotate(720deg) scale(1); }
 }
 
 .unwrap {
@@ -232,6 +209,11 @@ function rollD20Animated() {
   </div>
 
   <div class="presents" id="presents"></div>
+
+  <!-- D20 display -->
+  <div id="dice-container">
+    <div id="d20" class="d20">?</div>
+  </div>
 
   <button id="rollBtn">🎲 Unwrap a Gift</button>
 
@@ -304,6 +286,7 @@ const rollBtn = document.getElementById("rollBtn");
 const resultBox = document.getElementById("resultBox");
 const presentsDiv = document.getElementById("presents");
 const historyList = document.getElementById("historyList");
+const d20El = document.getElementById("d20");
 
 function renderPresents() {
   presentsDiv.innerHTML = "";
@@ -334,18 +317,27 @@ rollBtn.addEventListener("click", () => {
   if (rollsLeft <= 0) return;
 
   rollBtn.disabled = true;
-  resultBox.innerHTML = `<div class="dice">🎲</div>`;
+
+  // Start d20 animation
+  d20El.classList.add("rolling");
+  d20El.textContent = "?";
 
   setTimeout(() => {
     const roll = Math.floor(Math.random() * 20) + 1;
     const gift = gifts[roll - 1];
 
+    // Stop animation and show the rolled number
+    d20El.classList.remove("rolling");
+    d20El.textContent = roll;
+
+    // Persist
     rollsLeft--;
     localStorage.setItem(rollsKey, rollsLeft);
 
     history.unshift({ roll, gift });
     localStorage.setItem(historyKey, JSON.stringify(history));
 
+    // Show result text
     resultBox.innerHTML = `
       <div class="unwrap">
         <div class="roll-number">🎲 ${roll}</div>
@@ -355,14 +347,10 @@ rollBtn.addEventListener("click", () => {
 
     updateUI();
     rollBtn.disabled = false;
-  }, 1200);
+  }, 1200); // matches CSS animation duration
 });
 
 updateUI();
 </script>
 </body>
 </html>
-
-
-
-
