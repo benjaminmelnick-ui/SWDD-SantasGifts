@@ -1,182 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Galactic Gift Unwrapping</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      background: radial-gradient(circle at top, #1b1f3b, #000);
-      color: #f5f5f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<meta charset="UTF-8" />
+<title>Galactic Gift Unwrapping</title>
 
-    .container {
-      text-align: center;
-      background: rgba(20, 20, 30, 0.9);
-      border: 2px solid #c1121f;
-      border-radius: 12px;
-      padding: 30px;
-      width: 360px;
-      box-shadow: 0 0 25px rgba(193, 18, 31, 0.6);
-    }
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: radial-gradient(circle at top, #1b1f3b, #000);
+  color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    h1 {
-      margin-top: 0;
-      color: #ffd700;
-      text-shadow: 0 0 10px #ff0000;
-    }
+.container {
+  text-align: center;
+  background: rgba(20, 20, 30, 0.95);
+  border: 2px solid #c1121f;
+  border-radius: 12px;
+  padding: 30px;
+  width: 380px;
+  box-shadow: 0 0 30px rgba(193, 18, 31, 0.6);
+}
 
-    .subtitle {
-      font-size: 0.9em;
-      opacity: 0.85;
-      margin-bottom: 20px;
-    }
+h1 {
+  margin-top: 0;
+  color: #ffd700;
+  text-shadow: 0 0 12px #ff0000;
+}
 
-    .rolls {
-      margin-bottom: 15px;
-      font-size: 1.1em;
-    }
+.subtitle {
+  font-size: 0.9em;
+  opacity: 0.85;
+  margin-bottom: 20px;
+}
 
-    button {
-      background: linear-gradient(135deg, #c1121f, #780000);
-      color: white;
-      border: none;
-      padding: 14px 22px;
-      font-size: 1.1em;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.7);
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
+.rolls {
+  margin-bottom: 15px;
+  font-size: 1.1em;
+}
 
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 18px rgba(255, 0, 0, 1);
-    }
+button {
+  background: linear-gradient(135deg, #c1121f, #780000);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+}
 
-    button:disabled {
-      background: #555;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
+button:disabled {
+  background: #444;
+  cursor: not-allowed;
+  box-shadow: none;
+}
 
-    .result {
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px solid #444;
-      border-radius: 8px;
-      min-height: 60px;
-      background: rgba(0, 0, 0, 0.6);
-    }
+.result {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  min-height: 80px;
+  background: rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
 
-    .roll-number {
-      font-size: 2em;
-      color: #00e5ff;
-      text-shadow: 0 0 10px #00e5ff;
-    }
+.dice {
+  font-size: 3em;
+  animation: spin 1s ease-in-out;
+}
 
-    .gift {
-      margin-top: 10px;
-      font-size: 1.1em;
-      color: #7CFFB2;
-    }
-  </style>
+@keyframes spin {
+  0% { transform: rotate(0deg) scale(0.8); opacity: 0; }
+  50% { transform: rotate(360deg) scale(1.2); opacity: 1; }
+  100% { transform: rotate(720deg) scale(1); }
+}
+
+.unwrap {
+  animation: unwrap 1.2s ease-out forwards;
+}
+
+@keyframes unwrap {
+  0% { opacity: 0; transform: scale(0.8); }
+  60% { opacity: 1; transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.roll-number {
+  font-size: 2em;
+  color: #00e5ff;
+  text-shadow: 0 0 10px #00e5ff;
+}
+
+.gift {
+  margin-top: 10px;
+  font-size: 1.1em;
+  color: #7CFFB2;
+}
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>🎄 Galactic Gift Roll 🎄</h1>
-    <div class="subtitle">Roll the d20 and receive your destiny</div>
+<div class="container">
+  <h1>🎄 Galactic Gift Roll 🎄</h1>
+  <div class="subtitle">Unwrap your destiny</div>
 
-    <div class="rolls">
-      Rolls Remaining: <span id="rollsLeft">3</span>
-    </div>
-
-    <button id="rollBtn">🎲 Roll the d20</button>
-
-    <div class="result" id="resultBox">
-      Awaiting roll...
-    </div>
+  <div class="rolls">
+    Rolls Remaining: <span id="rollsLeft">0</span>
   </div>
 
-  <script>
-    /************* DM CONFIG *************/
-    const MAX_ROLLS = 3; // <-- CHANGE THIS FOR REWARDS
-    const gifts = [
-      "Lightsaber Crystal (Kyber Shard)",
-      "Festive Healing Stims (3)",
-      "Snow-Wrapped Cloak of Resistance",
-      "Prototype Blaster Mod (+1 damage once per combat)",
-      "Holiday Tech Toolkit",
-      "Mini Astromech Companion",
-      "Force-Infused Candy Cane (Consumable)",
-      "Wookiee Wool Winter Armor",
-      "Credits Cache (500 cr)",
-      "Sith-Holiday Relic (Dark Side Trinket)",
-      "Thermal Detonator (Festive Paint)",
-      "Force Snowglobe (Minor Utility Item)",
-      "Jedi-Holiday Robes",
-      "Starship Stocking Stuffer Upgrade",
-      "Frostbound Vibroknife",
-      "Rebel Gift Package",
-      "Imperial Gift Crate",
-      "Mandalorian Trinket",
-      "Holo-Santa Blessing (Advantage once)",
-      "Mystery Force Artifact"
-    ];
-    /*************************************/
+  <button id="rollBtn">🎲 Roll the d20</button>
 
-    // Generate or retrieve player ID
-    let playerId = localStorage.getItem("giftPlayerId");
-    if (!playerId) {
-      playerId = "player-" + Math.random().toString(36).substring(2);
-      localStorage.setItem("giftPlayerId", playerId);
-    }
+  <div class="result" id="resultBox">
+    Awaiting roll...
+  </div>
+</div>
 
-    const rollsKey = playerId + "-rolls";
-    let rollsLeft = localStorage.getItem(rollsKey);
+<script>
+/************* DM CONFIG *************/
+const MAX_ROLLS = 3;           // Rolls per player
+const DM_RESET_CODE = "FORCE"; // Change this if desired
 
-    if (rollsLeft === null) {
-      rollsLeft = MAX_ROLLS;
-      localStorage.setItem(rollsKey, rollsLeft);
-    } else {
-      rollsLeft = parseInt(rollsLeft);
-    }
+const gifts = [
+  "Lightsaber Crystal (Kyber Shard)",
+  "Festive Healing Stims (3)",
+  "Snow-Wrapped Cloak of Resistance",
+  "Prototype Blaster Mod (+1 damage once per combat)",
+  "Holiday Tech Toolkit",
+  "Mini Astromech Companion",
+  "Force-Infused Candy Cane (Consumable)",
+  "Wookiee Wool Winter Armor",
+  "Credits Cache (500 cr)",
+  "Sith-Holiday Relic",
+  "Thermal Detonator (Festive Paint)",
+  "Force Snowglobe",
+  "Jedi-Holiday Robes",
+  "Starship Stocking Stuffer Upgrade",
+  "Frostbound Vibroknife",
+  "Rebel Gift Package",
+  "Imperial Gift Crate",
+  "Mandalorian Trinket",
+  "Holo-Santa Blessing (Advantage once)",
+  "Mystery Force Artifact"
+];
+/*************************************/
 
-    const rollsLeftSpan = document.getElementById("rollsLeft");
-    const rollBtn = document.getElementById("rollBtn");
-    const resultBox = document.getElementById("resultBox");
+/************* PLAYER ID *************/
+let playerId = localStorage.getItem("giftPlayerId");
+if (!playerId) {
+  playerId = "player-" + Math.random().toString(36).substring(2);
+  localStorage.setItem("giftPlayerId", playerId);
+}
 
-    function updateUI() {
-      rollsLeftSpan.textContent = rollsLeft;
-      if (rollsLeft <= 0) {
-        rollBtn.disabled = true;
-        resultBox.innerHTML = "🎁 All gifts claimed. The Force is satisfied.";
-      }
-    }
+const rollsKey = playerId + "-rolls";
+let rollsLeft = localStorage.getItem(rollsKey);
+if (rollsLeft === null) {
+  rollsLeft = MAX_ROLLS;
+  localStorage.setItem(rollsKey, rollsLeft);
+} else {
+  rollsLeft = parseInt(rollsLeft);
+}
+/*************************************/
 
-    rollBtn.addEventListener("click", () => {
-      if (rollsLeft <= 0) return;
+/************* DM RESET *************/
+const params = new URLSearchParams(window.location.search);
+if (params.get("dmreset") === DM_RESET_CODE) {
+  localStorage.clear();
+  alert("DM RESET COMPLETE — All player rolls restored.");
+}
+/*************************************/
 
-      const roll = Math.floor(Math.random() * 20) + 1;
-      const gift = gifts[roll - 1];
+const rollsLeftSpan = document.getElementById("rollsLeft");
+const rollBtn = document.getElementById("rollBtn");
+const resultBox = document.getElementById("resultBox");
 
-      rollsLeft--;
-      localStorage.setItem(rollsKey, rollsLeft);
+function updateUI() {
+  rollsLeftSpan.textContent = rollsLeft;
+  if (rollsLeft <= 0) {
+    rollBtn.disabled = true;
+    resultBox.innerHTML = "🎁 All gifts claimed. The Force is satisfied.";
+  }
+}
 
-      resultBox.innerHTML = `
+rollBtn.addEventListener("click", () => {
+  if (rollsLeft <= 0) return;
+
+  rollBtn.disabled = true;
+  resultBox.innerHTML = `<div class="dice">🎲</div>`;
+
+  setTimeout(() => {
+    const roll = Math.floor(Math.random() * 20) + 1;
+    const gift = gifts[roll - 1];
+
+    rollsLeft--;
+    localStorage.setItem(rollsKey, rollsLeft);
+
+    resultBox.innerHTML = `
+      <div class="unwrap">
         <div class="roll-number">🎲 ${roll}</div>
         <div class="gift">🎁 ${gift}</div>
-      `;
-
-      updateUI();
-    });
+      </div>
+    `;
 
     updateUI();
-  </script>
+    rollBtn.disabled = false;
+  }, 1200);
+});
+
+updateUI();
+</script>
 </body>
 </html>
