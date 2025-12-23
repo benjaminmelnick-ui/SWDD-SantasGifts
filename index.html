@@ -138,7 +138,7 @@ button:disabled {
   margin-bottom: 4px;
 }
 
-<div id="dice-container">
+.dice <div id="dice-container">
   <div id="d20" class="d20 rolling">?</div>
 </div>
 
@@ -166,8 +166,25 @@ button:disabled {
   user-select: none;
 }
 
-.d20.rolling {
-  animation: d20-spin 0.6s linear infinite;
+.d20.rolling {const d20 = document.getElementById("d20");
+
+function rollD20Animated() {
+  d20.classList.add("rolling");
+  d20.textContent = "?";
+
+  const roll = Math.floor(Math.random() * 20) + 1;
+
+  setTimeout(() => {
+    d20.classList.remove("rolling");
+    d20.textContent = roll;
+
+    // IMPORTANT:
+    // Call your existing "handleRollResult(roll)" logic here
+    handleRollResult(roll);
+
+  }, 1200); // animation duration
+}
+
 }
 
 @keyframes d20-spin {
@@ -345,6 +362,7 @@ updateUI();
 </script>
 </body>
 </html>
+
 
 
 
